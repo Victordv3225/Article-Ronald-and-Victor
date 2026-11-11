@@ -1,0 +1,108 @@
+//The standard setup that we work with is the following.
+QQ:=Rationals();
+P2<x,y,z>:=ProjectiveSpace(QQ,2);
+O1:=LinearSystem(P2,1);
+Sec1:=Sections(O1);
+O2:=LinearSystem(P2,2);
+Sec2:=Sections(O2);
+O3:=LinearSystem(P2,3);
+Sec3:=Sections(O3);
+O4:=LinearSystem(P2,4);
+Sec4:=Sections(O4);
+
+//We define the points Pi from Definition 2.3. We blow up P2 in these points to get the Del Pezzo surface S from the article. For convenience we define P9:=[-1:0:1].
+P1:=[1,0,1];
+P2:=[9,0,41];
+P3:=[13,-60,57];
+P4:=[3,-132,151];
+P5:=[0,1,1];
+P6:=[0,-1,1];
+P7:=[-9,20,19];
+P8:=[-21,-300,71];
+P9:=[-1,0,1];
+
+//We put the points Pi in a list P for which we have P[i]=Pi.
+P:=[P1,P2,P3,P4,P5,P6,P7,P8,P9];
+
+//The following function maps i,j,k to the 3x3 matrix with rows Pi, Pj and Pk.
+function MatrixforLine(i,j,k)
+  M:=Matrix([P[c]: c in [i,j,k]]);
+  return M;
+end function;
+
+//The determinant of this matrix is zero precisely when there is a line passing through Pi, Pj and Pk.
+function DeterminantforLine(i,j,k)
+  return Determinant(MatrixforLine(i,j,k));
+end function;
+
+//The following function maps distinct i,j,k to the 6x6 matrix with rows the monomials of degree 2 in x,y,z evaluated in Pn, where n not in {i,j,k} indexes the columns.
+//This matrix appears in the second paragraph of the proof of Lemma 2.4.
+function MatrixforQuadric(i,j,k)
+  if i eq j or j eq k then
+    return "fail";
+  end if;
+	S:=[1..9];
+	S:=Exclude(S,i); S:=Exclude(S,j); S:=Exclude(S,k);
+	M:=Matrix([[Evaluate(m,P[c]): m in Sec2]: c in S]);
+	return M;
+end function;
+
+//The determinant of this matrix is zero precisely when the Pn for n not in {i,j,k} lie on a conic.
+function DeterminantforQuadric(i,j,k)
+  if i eq j or j eq k then
+    return "fail";
+  end if;
+  return Determinant(MatrixforQuadric(i,j,k));
+end function;
+
+//The following function maps distinct i,j to the 10x10 matrix whose first 7 rows are the 10 monomials in x,y,z of degree 3
+// evaluated in Pn for n not in {i,j}. Its last three rows are the 10 partial derivatives of the degree 3 monomials evaluated in Pi.
+function MatrixforCubic(i,j)
+  if i eq j then
+    return "fail";
+  end if;
+	S:=[1..9];
+	S:=Exclude(S,i); S:=Exclude(S,j);
+	M:=Matrix([[Evaluate(m,P[c]):m in Sec3]:c in S]);
+	N:=Matrix([[Evaluate(Derivative(m,w),P[i]):m in Sec3]: w in [1,2,3]]);
+	MN:=VerticalJoin(M,N);
+	return MN;
+end function;
+
+//The determinant of this matrix is zero precisely when all the Pn with n=/=j lie on a cubic that is singular in Pi.
+function DeterminantforCubic(i,j)
+ if i eq j then
+    return "fail";
+  end if;
+  return Determinant(MatrixforCubic(i,j));
+end function;
+
+//We can now verify that P1,...,P8 lie in general position, which was claimed in Lemma 2.4
+&or[DeterminantforLine(i,j,k) ne 0 : i in [1..j-1], j in [1..k-1], k in [3..8]];
+&or[DeterminantforQuadric(i,j,9) ne 0 : i in [1..j-1], j in [2..8]];
+&or[DeterminantforCubic(i,9) ne 0 : i in [1..8]];
+
+//Indeed we see that the points P1,...,P8 lie in general position.
+
+//We are now going to work towards exhibiting the curves from Lemma 2.6.
+//The following function maps i,j,k to the 15x15 matrix whose first 6 rows are the 15 degree 4 monomials in x,y,z
+//  evaluated in Pn for n not in {i,j,k}. The last 9 rows are given by all of the 15 derivatives of the degree 4 monomials
+// evaluated in Pn for i in (i,j,k) (so one Pn per row and the derivative w.r.t. one variable per row).
+function MatrixforQuartic(i,j,k)
+	S:=[1..9];
+	S:=Exclude(S,i); S:=Exclude(S,j); S:=Exclude(S,k);
+	M:=Matrix([[Evaluate(Sec4[b],P[c]):b in [1..#Sec4]]:c in S]);
+	N1:=Matrix([[Evaluate(Derivative(Sec4[b],1),P[c]):b in [1..#Sec4]]: c in [i,j,k]]);
+	N2:=Matrix([[Evaluate(Derivative(Sec4[b],2),P[c]):b in [1..#Sec4]]: c in [i,j,k]]);
+	N3:=Matrix([[Evaluate(Derivative(Sec4[b],3),P[c]):b in [1..#Sec4]]: c in [i,j,k]]);
+	MN1:=VerticalJoin(M,N1); MN2:=VerticalJoin(MN1,N2); MN3:=VerticalJoin(MN2,N3);
+	return MN3;
+end function;
+
+//This matrix has determinant zero if and only if there is a quartic that passes through all Pn with singularities at Pi, Pj and Pk.
+
+function DeterminantforQuartic(i,j,k)
+  return Determinant(MatrixforQuartic(i,j,k));
+end function;
+
+
