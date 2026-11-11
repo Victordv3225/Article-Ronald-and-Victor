@@ -1,13 +1,16 @@
+//We give code which supports the proofs of Lemma 2.4, Lemma 2.6 and Theorem 2.7 and the nescessary code is also given in this order (2.4->2.6->2.7).
+
+
 //The standard setup that we work with is the following.
 QQ:=Rationals();
-P2<x,y,z>:=ProjectiveSpace(QQ,2);
-O1:=LinearSystem(P2,1);
+PP<x,y,z>:=ProjectiveSpace(QQ,2);
+O1:=LinearSystem(PP,1);
 Sec1:=Sections(O1);
-O2:=LinearSystem(P2,2);
+O2:=LinearSystem(PP,2);
 Sec2:=Sections(O2);
-O3:=LinearSystem(P2,3);
+O3:=LinearSystem(PP,3);
 Sec3:=Sections(O3);
-O4:=LinearSystem(P2,4);
+O4:=LinearSystem(PP,4);
 Sec4:=Sections(O4);
 
 //We define the points Pi from Definition 2.3. We blow up P2 in these points to get the Del Pezzo surface S from the article. For convenience we define P9:=[-1:0:1].
@@ -77,17 +80,15 @@ function DeterminantforCubic(i,j)
   return Determinant(MatrixforCubic(i,j));
 end function;
 
-//We can now verify that P1,...,P8 lie in general position, which was claimed in Lemma 2.4
+//The following three lines verify that P1,...,P8 lie in general position, which was claimed in Lemma 2.4.
 &or[DeterminantforLine(i,j,k) ne 0 : i in [1..j-1], j in [1..k-1], k in [3..8]];
 &or[DeterminantforQuadric(i,j,9) ne 0 : i in [1..j-1], j in [2..8]];
 &or[DeterminantforCubic(i,9) ne 0 : i in [1..8]];
 
-//Indeed we see that the points P1,...,P8 lie in general position.
-
 //We are now going to work towards exhibiting the curves from Lemma 2.6.
 //The following function maps i,j,k to the 15x15 matrix whose first 6 rows are the 15 degree 4 monomials in x,y,z
 //  evaluated in Pn for n not in {i,j,k}. The last 9 rows are given by all of the 15 derivatives of the degree 4 monomials
-// evaluated in Pn for i in (i,j,k) (so one Pn per row and the derivative w.r.t. one variable per row).
+// evaluated in Pn for i in (i,j,k) (so one Pn per row and the derivatives w.r.t. one variable w in {x,y,z} per row).
 function MatrixforQuartic(i,j,k)
 	S:=[1..9];
 	S:=Exclude(S,i); S:=Exclude(S,j); S:=Exclude(S,k);
@@ -99,10 +100,89 @@ function MatrixforQuartic(i,j,k)
 	return MN3;
 end function;
 
-//This matrix has determinant zero if and only if there is a quartic that passes through all Pn with singularities at Pi, Pj and Pk.
-
-function DeterminantforQuartic(i,j,k)
-  return Determinant(MatrixforQuartic(i,j,k));
+//The following function takes i,j,k to the line through Pi,Pj,Pk if it exists and returns "fail" else.
+function Line(i,j,k)
+	W:=NullspaceOfTranspose(MatrixforLine(i,j,k));
+	if Dimension(W) eq 0 then
+		return "fail";
+	end if;
+	gen:=W.1;
+	f:=0;
+	for i:=1 to #Sec1 do
+		f:=f+Sec1[i]*gen[i];
+	end for;
+	lcmD:=LeastCommonMultiple([Denominator(c) : c in Coefficients(f)]);
+	f:=lcmD*f;
+	return f;
 end function;
 
+//The following function takes distinct i,j,k to the quadric that passes through Pn for n not in {i,j,k} and it returns "fail" if this quadric does not exist.
+function Quadric(i,j,k)
+	if i eq j or j eq k then
+    	return "fail";
+  	end if;
+	W:=NullspaceOfTranspose(MatrixforQuadric(i,j,k));
+	if Dimension(W) eq 0 then
+		return "fail";
+	end if;
+	gen:=W.1;
+	f:=0;
+	for i:=1 to #Sec2 do
+		f:=f+Sec2[i]*gen[i];
+	end for;
+	lcmD:=LeastCommonMultiple([Denominator(c) : c in Coefficients(f)]);
+	f:=lcmD*f;
+	return f;
+end function;
+
+//The following function takes distinct i,j,k to the quartic that passes through Pn for all n and has singularities at Pi, Pj and Pk.
+//It returns "fail" if this quartic does not exist.
+function Quartic(i,j,k)
+	W:=NullspaceOfTranspose(MatrixforQuartic(i,j,k));
+	if Dimension(W) eq 0 then
+		return "fail";
+	end if;
+	gen:=W.1;
+	f:=0;
+	for i:=1 to #Sec4 do
+		f:=f+Sec4[i]*gen[i];
+	end for;
+	lcmD:=LeastCommonMultiple([Denominator(c) : c in Coefficients(f)]);
+	f:=lcmD*f;
+	return f;
+end function;
+
+//We can now list the curves from Lemma 2.6. Note that the existence of these curves implies that they pass through P9=[-1:0:1].
+//The lines are given by:
+Line(1,2,9);
+Line(3,4,9);
+//The quadrics are given by:
+Quadric(1,3,5);
+Quadric(1,4,6);
+Quadric(2,3,7);
+Quadric(2,4,8);
+//The quartics are given by:
+Quartic(1,7,8);
+Quartic(2,3,6);
+
+//We move on to the code that supports the proof of Theorem 2.7.
+//Magma calculates the basepoint A of the linear system L:=|3H-sum_{i=1}^{8} Pi|.
+L:=LinearSystem(O3,[PP!(P[i]) : i in [1..8]]);
+AA:=BaseScheme(L);
+A:=RationalPoints(AA)[1];
+
+//We can now calculate the unique curve C in L that also contains P9=[-1:0:1].
+//This curve C is also exhibited in the proof of Theorem 2.7.
+LP9:=LinearSystem(L,PP!(P9));
+f:=Sections(LP9)[1];
+lcmD:=LeastCommonMultiple([Denominator(c) : c in Coefficients(f)]);
+f:=f*lcmD;
+C:=Curve(PP,f);
+
+// We can show that C is smooth. //Since A lies on C, the pair (C,A) defines an Elliptic curve.
+// Magma computes an isomorphism phi:C->E, where E is a cubic curve in Weierstrass form for which we have phi(A)=[0:1:0].
+IsNonsingular(C);
+E,phi:=EllipticCurve(C,A);
+//Magma calculates the order of phi([-1:0:1]) on E, which is the same as the order of [-1,0,1] on (C,A). The order turns out to be infinite.
+Order(phi(P9));
 
