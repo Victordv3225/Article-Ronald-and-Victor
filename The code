@@ -178,6 +178,7 @@ f:=Sections(LP9)[1];
 lcmD:=LeastCommonMultiple([Denominator(c) : c in Coefficients(f)]);
 f:=f*lcmD;
 C:=Curve(PP,f);
+C;
 
 // We can show that C is smooth. //Since A lies on C, the pair (C,A) defines an Elliptic curve.
 // Magma computes an isomorphism phi:C->E, where E is a cubic curve in Weierstrass form for which we have phi(A)=[0:1:0].
