@@ -81,9 +81,9 @@ function DeterminantforCubic(i,j)
 end function;
 
 //The following three lines verify that P1,...,P8 lie in general position, which was claimed in Lemma 2.4.
-&or[DeterminantforLine(i,j,k) ne 0 : i in [1..j-1], j in [1..k-1], k in [3..8]];
-&or[DeterminantforQuadric(i,j,9) ne 0 : i in [1..j-1], j in [2..8]];
-&or[DeterminantforCubic(i,9) ne 0 : i in [1..8]];
+&and[DeterminantforLine(i,j,k) ne 0 : i in [1..j-1], j in [1..k-1], k in [3..8]];
+&and[DeterminantforQuadric(i,j,9) ne 0 : i in [1..j-1], j in [2..8]];
+&and[DeterminantforCubic(i,9) ne 0 : i in [1..8]];
 
 //We are now going to work towards exhibiting the curves from Lemma 2.6.
 //The following function maps i,j,k to the 15x15 matrix whose first 6 rows are the 15 degree 4 monomials in x,y,z
