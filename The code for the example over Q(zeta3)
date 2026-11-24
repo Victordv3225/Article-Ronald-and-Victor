@@ -16,18 +16,18 @@ O4:=LinearSystem(PP,4);
 Sec4:=Sections(O4);
 
 //We blow up P2 in these points to get the Del Pezzo surface X from the article. For convenience we define P9:=[-1:0:1].
-P1:=[1,0,1];
-P2:=[-3696*a+3975,0,12883];
-P3:=[-7040*a-2969,-8512*a-5244,9577];
-P4:=[-15616*a-8649,-34624*a-13600,46921];
-P5:=[0,1,1];
-P6:=[0,1,-1];
-P7:=[-1600*a-751,-3872*a-1488,2353];
-P8:=[-637952*a+116697,-359168*a-338288,1319449];
-P9:=[-1,0,1];
-
 //We put the points Pi in a list P for which we have P[i]=Pi.
-P:=[P1,P2,P3,P4,P5,P6,P7,P8,P9];
+P:=[
+    [1,0,1],
+    [-2273*a + 3847,0,-3041*a + 5815],
+    [-768*a + 601,19*(-64*a + 20),1664*a + 2007],
+    [-768*a + 601,19*(-64*a + 96),4096*a + 4135],
+    [0,1,1],
+    [0,-1,1],
+    [-48*a + 51,16*(6*a + 23),-240*a - 301],
+    [1824*a - 2081,16*(-16*a + 81),2848*a - 5345],
+    [-1,0,1]
+];
 
 //The following function maps i,j,k to the 3x3 matrix with rows Pi, Pj and Pk.
 function MatrixforLine(i,j,k)
