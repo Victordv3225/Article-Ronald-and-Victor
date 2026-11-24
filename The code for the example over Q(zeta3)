@@ -4,7 +4,7 @@
 //The standard setup that we work with is the following.
 QQ:=Rationals();
 R<t>:=PolynomialRing(QQ);
-K<a>:=NumberField(QQ,t^2+t+1);
+K<a>:=NumberField(t^2+t+1);
 PP<x,y,z>:=ProjectiveSpace(K,2);
 O1:=LinearSystem(PP,1);
 Sec1:=Sections(O1);
