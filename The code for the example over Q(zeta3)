@@ -173,7 +173,7 @@ A:=RationalPoints(AA)[1];
 
 //We can now calculate the unique curve C in L that also contains P9=[-1:0:1].
 //This curve C is also exhibited in the proof of Theorem 2.7.
-LP9:=LinearSystem(L,PP!(P9));
+LP9:=LinearSystem(L,PP!(P[9]));
 f:=Sections(LP9)[1];
 lcmD:=LeastCommonMultiple([Denominator(c) : c in Coefficients(f)]);
 f:=f*lcmD;
@@ -185,5 +185,5 @@ C;
 IsNonsingular(C);
 E,phi:=EllipticCurve(C,A);
 //Magma calculates the order of phi([-1:0:1]) on E, which is the same as the order of [-1,0,1] on (C,A). The order turns out to be infinite.
-Order(phi(P9));
+Order(phi(P[9]));
 
