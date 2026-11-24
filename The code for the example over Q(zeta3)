@@ -15,17 +15,16 @@ Sec3:=Sections(O3);
 O4:=LinearSystem(PP,4);
 Sec4:=Sections(O4);
 
-//We blow up P2 in these points to get the Del Pezzo surface X from the article. For convenience we define P9:=[-1:0:1].
-//We put the points Pi in a list P for which we have P[i]=Pi.
-P:=[
-    [1,0,1],
-    [-2273*a + 3847,0,-3041*a + 5815],
-    [-768*a + 601,19*(-64*a + 20),1664*a + 2007],
-    [-768*a + 601,19*(-64*a + 96),4096*a + 4135],
+//We blow up P2 in the points Pi for i leq 8 to get the Del Pezzo surface X from the article. For convenience we define P9:=[-1:0:1].
+//We put the points Pi from Remark in a list P for which we have P[i]=Pi.
+P:=[[1,0,1],
+    [-1089*a - 1881,0,-3393*a - 3081],
+    [-768*a + 601,-1216*a + 380,1664*a + 2007],
+    [-768*a + 601,-1216*a + 1824,4096*a + 4135],
     [0,1,1],
     [0,-1,1],
-    [-48*a + 51,16*(6*a + 23),-240*a - 301],
-    [1824*a - 2081,16*(-16*a + 81),2848*a - 5345],
+    [-48*a + 51,-96*a + 144,144*a + 147],
+    [672*a + 2079,-768*a + 240,3744*a + 3039],
     [-1,0,1]
 ];
 
