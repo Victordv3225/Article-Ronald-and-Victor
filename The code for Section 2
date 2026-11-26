@@ -152,7 +152,8 @@ function Quartic(i,j,k)
 	return f;
 end function;
 
-//We can now list the curves from Lemma 2.6. Note that the existence of these curves implies that they pass through P9=[-1:0:1].
+//We can now list the curves from Lemma 2.6.
+//Note that Magma not giving "fail" as output implies that the curves pass through P9=[-1:0:1].
 //The lines are given by:
 Line(1,2,9);
 Line(3,4,9);
