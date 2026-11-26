@@ -1,4 +1,4 @@
-//We give code which supports the proof of Remark x.
+//We give code which supports the proof of Remark 3.7.
 
 
 //The standard setup that we work with is the following.
@@ -80,7 +80,7 @@ function DeterminantforCubic(i,j)
   return Determinant(MatrixforCubic(i,j));
 end function;
 
-//The following three lines verify that P1,...,P8 lie in general position, which was claimed in Remark x.
+//The following three lines verify that P1,...,P8 lie in general position, which was claimed in Remark 3.7.
 &and[DeterminantforLine(i,j,k) ne 0 : i in [1..j-1], j in [1..k-1], k in [3..8]];
 &and[DeterminantforQuadric(i,j,9) ne 0 : i in [1..j-1], j in [2..8]];
 &and[DeterminantforCubic(i,9) ne 0 : i in [1..8]];
@@ -152,7 +152,8 @@ function Quartic(i,j,k)
 	return f;
 end function;
 
-//We can now list the curves in Remark x. Note that the existence of these curves implies that they pass through P9=[-1:0:1].
+//We can now list the 8 curves that are claimed to be concurrent in [-1:0:1] in Remark 3.7. 
+//Note that Magma not outputting "fail" proves that these curves pass through P9=[-1:0:1].
 //The lines are given by:
 Line(1,2,9);
 Line(3,4,9);
